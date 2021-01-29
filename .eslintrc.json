@@ -27,10 +27,7 @@
     "class-methods-use-this": "off",
     "import/order": "off",
     "prefer-const": "off",
-    "no-await-in-loop": "off",
-    "no-unsafe-finally": "off",
-    "no-eval": "off",
-    "no-nested-ternary": "off",
+    "no-return-assign": "off",
     "prettier/prettier": [
       "error",
       {

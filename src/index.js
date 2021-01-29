@@ -3,11 +3,14 @@ const cors = require('cors');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const app = express();
 const { PORT } = require('./config/constants');
+const routes = require('./routes');
+const stringifyBody = require('./utils/utils');
+
+const app = express();
 
 const port = process.env.port || PORT || 3000;
-// const routes = require('./routes');
+
 app.use(cors());
 app.use(
   bodyParser.json({
@@ -21,11 +24,11 @@ app.use(
     extended: true,
   })
 );
-
+app.use(stringifyBody);
 // log every request to the console
 app.use(morgan('dev'));
 
-// app.use('/api/', routes);
+app.use(routes);
 
 app.all('*', (req, res) => {
   return res.status(404).json({
