@@ -20,7 +20,6 @@
   ],
   "rules": {
     "no-underscore-dangle": "off",
-    "no-console": "off",
     "camelcase": "off",
     "no-param-reassign": "off",
     "consistent-return": "off",
@@ -28,6 +27,7 @@
     "import/order": "off",
     "prefer-const": "off",
     "no-return-assign": "off",
+    "no-restricted-syntax": "off",
     "prettier/prettier": [
       "error",
       {

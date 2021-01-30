@@ -1,5 +1,6 @@
 const apiResponse = require('./response');
 const { validationResult } = require('express-validator');
+
 module.exports = {
   validate: (req, res, next) => {
     const errors = validationResult(req);
@@ -22,37 +23,52 @@ module.exports = {
     next();
   },
   parseBody: (req, res, next) => {
-    if (req.body) {
-      Object.keys(req.body).forEach(el => {
+    Object.keys(req.body).forEach(el => {
+      try {
         req.body[el] = JSON.parse(req.body[el]);
-      });
-    }
+      } catch (err) {
+        return null;
+      }
+    });
     next();
   },
   checkObjectFields: async (obj, fields = []) => {
     let error = ``;
     try {
+      // eslint-disable-next-line
       for (field of fields) {
+        // eslint-disable-next-line
         if (!obj[field]) {
-          error += `field ${field} is missing from rule.`
+          // eslint-disable-next-line
+          error += `field ${field} is missing from rule.`;
           break;
         }
       }
       if (error) {
-        return { err: error, success: false }
+        return { err: error, success: false };
       }
-      return { err: null, success: true }
-
+      return { err: null, success: true };
     } catch (err) {
-      return { err: err.message, success: false }
+      return { err: err.message, success: false };
     }
   },
   checkDataField: (req, res, next) => {
-    let { data } = req.body
-    if (data && (Array.isArray(data) || typeof (data) === "string" || typeof (data) === "object")) {
-      next()
+    let { data } = req.body;
+    if (
+      data &&
+      (Array.isArray(data) ||
+        typeof data === 'string' ||
+        typeof data === 'object')
+    ) {
+      next();
     } else {
-      return apiResponse(res, 400, "error", "data should be a valid array, json object or string.", null)
+      return apiResponse(
+        res,
+        400,
+        'error',
+        'data should be a valid array, json object or string.',
+        null
+      );
     }
-  }
+  },
 };
