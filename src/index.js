@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const { PORT } = require('./config/constants');
 const routes = require('./routes');
-const stringifyBody = require('./utils/utils');
+const { stringifyBody } = require('./middlewares/validate');
 
 const app = express();
 
@@ -18,32 +18,21 @@ app.use(
     type: 'application/json',
   })
 );
-app.use(
-  bodyParser.urlencoded({
-    limit: '5mb',
-    extended: true,
-  })
-);
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({
+      message: "Invalid JSON payload passed.",
+      status: "error",
+      data: null,
+    })
+  }
+  next();
+});
 app.use(stringifyBody);
-// log every request to the console
+
 app.use(morgan('dev'));
 
 app.use(routes);
-
-app.all('*', (req, res) => {
-  return res.status(404).json({
-    error: true,
-    message: 'Requested route not found',
-  });
-});
-
-// error handling middleware
-app.use((err, req, res) => {
-  console.error(err.stack || err.message || err);
-  res.status(500).json({
-    error: true,
-    message: err.stack || err.message || err,
-  });
-});
 
 app.listen(port, () => console.log(`API listening on port ${port}`));

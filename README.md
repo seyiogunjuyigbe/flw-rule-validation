@@ -61,7 +61,7 @@ The route should accept JSON data containing a rule and data field to validate t
     "crew": "Rocinante",
     "age": 34,
     "position": "Captain",
-    "missions": 45
+    "missions" : 45
   }
 }
 
