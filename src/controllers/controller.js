@@ -35,9 +35,8 @@ module.exports = {
             if (!check.success) {
                 return apiResponse(res, 400, "error", check.err, null)
             }
-            // check if "field" in "rule" has 
+            // check if "field" in "rule" has nested objects
             let splittedField = rule.field.split(".");
-            console.log(splittedField.length)
             if (splittedField.length) {
                 if (splittedField.length > 2) {
                     return apiResponse(res, 400, "error", "nested field object levels are more than twos.", null)
@@ -67,14 +66,82 @@ module.exports = {
             }
             switch (rule.condition) {
                 case "eq":
-                    if (data[rule.field] !== data.condition_value) {
-
+                    if (!(data[rule.field] === rule.condition_value)) {
+                        return apiResponse(res, 400, "error", `field ${rule.field} failed validation.`, {
+                            validation: {
+                                error: true,
+                                field: rule.field,
+                                field_value: data[rule.field],
+                                condition: rule.condition,
+                                condition_value: rule.condition_value
+                            }
+                        })
                     }
                     break;
-
+                case "neq":
+                    if (!(data[rule.field] !== rule.condition_value)) {
+                        return apiResponse(res, 400, "error", `field ${rule.field} failed validation`, {
+                            validation: {
+                                error: true,
+                                field: rule.field,
+                                field_value: data[rule.field],
+                                condition: rule.condition,
+                                condition_value: rule.condition_value
+                            }
+                        })
+                    }
+                    break;
+                case "gt":
+                    if (!(data[rule.field] > rule.condition_value)) {
+                        return apiResponse(res, 400, "error", `field ${rule.field} failed validation`, {
+                            validation: {
+                                error: true,
+                                field: rule.field,
+                                field_value: data[rule.field],
+                                condition: rule.condition,
+                                condition_value: rule.condition_value
+                            }
+                        })
+                    }
+                    break;
+                case "gte":
+                    if (!(data[rule.field] >= rule.condition_value)) {
+                        return apiResponse(res, 400, "error", `field ${rule.field} failed validation`, {
+                            validation: {
+                                error: true,
+                                field: rule.field,
+                                field_value: data[rule.field],
+                                condition: rule.condition,
+                                condition_value: rule.condition_value
+                            }
+                        })
+                    }
+                    break;
+                case "contains":
+                    if (!(data[rule.field].includes(rule.condition_value))) {
+                        return apiResponse(res, 400, "error", `field ${rule.field} failed validation`, {
+                            validation: {
+                                error: true,
+                                field: rule.field,
+                                field_value: data[rule.field],
+                                condition: rule.condition,
+                                condition_value: rule.condition_value
+                            }
+                        })
+                    }
+                    break;
                 default:
                     break;
             }
+            return apiResponse(res, 200, "success", `field ${rule.field} successfully validated.`, {
+                validation: {
+                    error: false,
+                    field: rule.field,
+                    field_value: data[rule.field],
+                    condition: rule.condition,
+                    condition_value: rule.condition_value
+                }
+            })
         } catch (err) {
             return apiResponse(res, 500, "error", "An Error Ocured", { error: err.message })
         }
