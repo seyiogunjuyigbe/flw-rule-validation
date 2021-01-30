@@ -35,11 +35,8 @@ module.exports = {
   checkObjectFields: async (obj, fields = []) => {
     let error = ``;
     try {
-      // eslint-disable-next-line
       for (field of fields) {
-        // eslint-disable-next-line
         if (!obj[field]) {
-          // eslint-disable-next-line
           error += `field ${field} is missing from rule.`;
           break;
         }
