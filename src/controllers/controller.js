@@ -26,6 +26,7 @@ module.exports = {
     }
   },
   validateRule: async (req, res) => {
+    let d;
     try {
       const { rule, data } = req.body;
       // check if "rule" field has the required object fields
@@ -92,7 +93,10 @@ module.exports = {
       }
       switch (rule.condition) {
         case 'eq':
-          if (!(data[rule.field] === rule.condition_value)) {
+          d = data[splittedField[0]][splittedField[1]]
+            ? data[splittedField[0]][splittedField[1]]
+            : data[splittedField[0]];
+          if (!(d === rule.condition_value)) {
             return apiResponse(
               res,
               400,
@@ -111,7 +115,10 @@ module.exports = {
           }
           break;
         case 'neq':
-          if (!(data[rule.field] !== rule.condition_value)) {
+          d = data[splittedField[0]][splittedField[1]]
+            ? data[splittedField[0]][splittedField[1]]
+            : data[splittedField[0]];
+          if (!(d !== rule.condition_value)) {
             return apiResponse(
               res,
               400,
@@ -130,7 +137,10 @@ module.exports = {
           }
           break;
         case 'gt':
-          if (!(data[rule.field] > rule.condition_value)) {
+          d = data[splittedField[0]][splittedField[1]]
+            ? data[splittedField[0]][splittedField[1]]
+            : data[splittedField[0]];
+          if (!(d > rule.condition_value)) {
             return apiResponse(
               res,
               400,
@@ -149,7 +159,10 @@ module.exports = {
           }
           break;
         case 'gte':
-          if (data[rule.field] >= rule.condition_value === false) {
+          d = data[splittedField[0]][splittedField[1]]
+            ? data[splittedField[0]][splittedField[1]]
+            : data[splittedField[0]];
+          if (!(d >= rule.condition_value)) {
             return apiResponse(
               res,
               400,
@@ -168,7 +181,10 @@ module.exports = {
           }
           break;
         case 'contains':
-          if (!data[rule.field].includes(rule.condition_value)) {
+          d = data[splittedField[0]][splittedField[1]]
+            ? data[splittedField[0]][splittedField[1]]
+            : data[splittedField[0]];
+          if (!d.includes(rule.condition_value)) {
             return apiResponse(
               res,
               400,
